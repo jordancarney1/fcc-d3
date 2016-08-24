@@ -35,6 +35,7 @@
     "webpack-dev-server": "^1.15.0"
   },
   "scripts": {
+    "build": "webpack",
     "start": "webpack-dev-server --progress",
     "test": "mocha --compilers js:babel-register --require babel-polyfill --recursive src/test"
   },
