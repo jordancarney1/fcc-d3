@@ -21,9 +21,7 @@ module.exports = {
   ],
 
   plugins: [
-    new HtmlWebpackPlugin({
-      template: __dirname + '/dist/index.html'
-    }),
+    new HtmlWebpackPlugin(),
     new webpack.HotModuleReplacementPlugin()
   ],
 
