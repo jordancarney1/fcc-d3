@@ -1,2 +1,8 @@
-Collaborative programming on freeCodeCamp's D3 projects with <a href="https://github.com/arecvlohe" target="_blank">arecvlohe</a>
-Testing 1, 2, 3...
+A Collaborative Programming Project for FreeCodeCamp's Data Visualaization Certificate
+
+Welcome to this project. To get setup run:
+
+  - `npm install` to install all dependencies
+  - `npm start` to run the webpack dev server
+    - You can go to `localhost:8080` after and you will see good ole' `Hello, world!` there to greet you!
+  - `npm run test` to run tests with mocha
