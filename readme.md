@@ -1,1 +1,1 @@
-Collaborative programming on freeCodeCamp's D3 projects with https://github.com/arecvlohe
+Collaborative programming on freeCodeCamp's D3 projects with <a href="https://github.com/arecvlohe" target="_blank">arecvlohe</a>
