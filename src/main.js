@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { render } from 'react-dom'
 import * as d3 from 'd3'
-import styles from './main.css'
+import './main.css'
 
 require('es6-promise').polyfill();
 require('isomorphic-fetch');
@@ -24,10 +24,19 @@ class App extends Component {
   }
 
   render () {
-    return <div className={styles.main}>Hello, world!</div>
+    return <div>React and D3!</div>
   }
 }
 
-d3.select('body').append('p').text('New paragraph!')
+
+const dataSet = [1, 2, 3, 4, 5, 6]
+
+d3.select('body')
+  .selectAll('div')
+  .data(dataSet)
+  .enter()
+  .append('div')
+  .attr('class', 'bar')
+  .style('height', d => d * 5 + 'px')
 
 render(<App />, document.getElementById('root'))

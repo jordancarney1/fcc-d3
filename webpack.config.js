@@ -6,13 +6,13 @@ module.exports = {
   entry: __dirname + '/src/main.js',
   output: {
     path: __dirname + '/dist',
-    filename: 'bundle.js'
+    filename: '[name]-[hash].js'
   },
 
   module: {
     loaders: [
       { test: /\.js$/, exclude: /node_modules/, loader: 'babel' },
-      { test: /\.css$/, loader: 'style!css?modules!postcss' }
+      { test: /\.css$/, loader: 'style!css!postcss' }
     ]
   },
 

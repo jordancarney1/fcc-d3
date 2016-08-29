@@ -1,3 +1,11 @@
 .main {
   color: pink
 }
+
+.bar {
+  display: inline-block;
+  width: 20px;
+  height: 75px; /* Gets overriden by D3-assigned height below */
+  margin-right: 2px;
+  background-color: turquoise;
+}
