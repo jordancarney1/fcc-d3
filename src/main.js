@@ -57,8 +57,6 @@ class App extends Component {
 
   render() {
 
-
-
       // Set dimensions and margins of the page elements based on viewport dimensions
       const margin = {
         top: this.state.margin.top,
@@ -119,7 +117,9 @@ class App extends Component {
         .range([height, 0])
 
       const xAxis = d3.axisBottom(x)
-        //.ticks(d3.timeYear, 5)
+        .ticks(d3.timeYear.every(5))
+        .tickFormat(d3.timeFormat('%Y'))
+        
       const yAxis = d3.axisLeft(y)
 
       // Chart the Graph!
