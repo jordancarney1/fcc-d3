@@ -9,6 +9,14 @@ require('es6-promise').polyfill();
 require('isomorphic-fetch');
 
 class App extends Component {
+  render() {
+    return(
+      <BarChart />
+    )
+  }
+}
+
+class BarChart extends Component {
 
   constructor() {
     super()
