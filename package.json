@@ -41,8 +41,7 @@
   "scripts": {
     "build": "webpack",
     "start": "webpack-dev-server --progress",
-    "test": "mocha --compilers js:babel-register --require babel-polyfill --recursive src/test",
-    "deploy-demo": "git push origin :gh-pages && git subtree push --prefix dist origin gh-pages"
+    "test": "mocha --compilers js:babel-register --require babel-polyfill --recursive src/test"
   },
   "repository": {
     "type": "git",
