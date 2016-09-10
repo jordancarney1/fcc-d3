@@ -52,5 +52,10 @@
   "bugs": {
     "url": "https://github.com/jordan-carney/fcc-d3/issues"
   },
+<<<<<<< HEAD
   "homepage": "https://github.com/jordan-carney/fcc-d3#readme"
+=======
+  "homepage": "https://jordan-carney.github.io/fcc-d3/",
+  "readme": "https://github.com/jordan-carney/fcc-d3#readme"
+>>>>>>> efd92efd8e1f6b51537f826a397f8783a62567cf
 }

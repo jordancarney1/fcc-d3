@@ -10,18 +10,18 @@ require('isomorphic-fetch');
 
 class App extends Component {
 
-  constructor() {
+  constructor () {
     super()
     this.state = {
-      urls:{
+      urls: {
         barChart: 'https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/GDP-data.json'
       },
       data: false,
-      margin: { 
-        top: 30, 
+      margin: {
+        top: 30,
         right: 30,
         bottom: 30,
-        left: 50  
+        left: 50
       },
       window: {
         width: window.innerWidth,
@@ -30,16 +30,26 @@ class App extends Component {
     }
   }
 
-  handleResize() {
+  handleResize () {
     this.setState( Object.assign({}, this.state, {
       window: {
         width: window.innerWidth,
         height: window.innerHeight
-      }  
+      }
     }))
   }
 
-  componentDidMount() {
+  handleHover (d) {
+    const formatDate = d3.timeFormat('%Y - %B')
+    const formatCurrency = d3.format('$,.2f')
+    const theToolTip = document.getElementById('tool-tip')
+    theToolTip.innerHTML = '<strong>' + formatCurrency(d[1]) + ' Billion</strong>' + '<br />' + formatDate(new Date(d[0]))
+    theToolTip.style.opacity = 0.9
+    theToolTip.style.left = (d3.event.pageX + 4) + 'px'
+    theToolTip.style.top = (d3.event.pageY - 44) + 'px'
+  }
+
+  componentDidMount () {
     window.addEventListener('resize', this.handleResize.bind(this))
     fetch(this.state.urls.barChart)
       .then(res => res.json())
@@ -51,11 +61,11 @@ class App extends Component {
       )
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     window.removeEventListener('resize', this.handleResize.bind(this))
   }
 
-  render() {
+  render () {
 
       // Set dimensions and margins of the page elements based on viewport dimensions
       const margin = {
@@ -70,9 +80,9 @@ class App extends Component {
       //Define elements for graph
       const container = ReactFauxDOM.createElement('div')
       container.setAttribute('class', 'container')
-      
+
       const headline = ReactFauxDOM.createElement('h1')
-      headline.textContent = "React and D3!"
+      headline.textContent = 'React and D3!'
 
       const header = ReactFauxDOM.createElement('div')
       header.setAttribute('class', 'header')
@@ -83,10 +93,18 @@ class App extends Component {
       const cardHeader = ReactFauxDOM.createElement('h2')
       cardHeader.textContent = this.state.data.name ? this.state.data.name : 'Loading...'
 
+      const footer = ReactFauxDOM.createElement('div')
+      footer.setAttribute('class', 'card-footer')
+
+      const cardFooter = ReactFauxDOM.createElement('p')
+      cardFooter.textContent = this.state.data.description ? this.state.data.description : ''
+
+      // Begin setting up DOM elements. **There is surely a better way to organize this...
       container.appendChild(header)
       header.appendChild(headline)
       container.appendChild(card)
       card.appendChild(cardHeader)
+      footer.appendChild(cardFooter)
 
     if (this.state.data) {
 
@@ -94,8 +112,16 @@ class App extends Component {
       graph.setAttribute('width', width + margin.left + margin.right)
       graph.setAttribute('height', height + margin.top + margin.bottom)
 
-      //Build DOM for graph structure
+      // Define the div for the tooltip
+      const toolTip = ReactFauxDOM.createElement('div')
+      toolTip.setAttribute('class', 'tooltip')
+      toolTip.setAttribute('id', 'tool-tip')
+      toolTip.style.setProperty('opacity', 0)
+
+      //Build DOM for graph structure. **There is surely a better way to organize this...
+      card.appendChild(toolTip)
       card.appendChild(graph)
+      card.appendChild(footer)
 
       // Get Data Ready
       const dataSet = this.state.data
@@ -103,7 +129,7 @@ class App extends Component {
         return new Date(d[0])
       })
 
-      // Define scaling for graph      
+      // Define scaling for graph
       const barWidth = Math.ceil(width / dataSet.data.length)
 
       const x = d3.scaleTime()
@@ -119,7 +145,7 @@ class App extends Component {
       const xAxis = d3.axisBottom(x)
         .ticks(d3.timeYear.every(5))
         .tickFormat(d3.timeFormat('%Y'))
-        
+
       const yAxis = d3.axisLeft(y)
 
       // Chart the Graph!
@@ -145,8 +171,7 @@ class App extends Component {
         .append('rect')
           .attr('class', 'bar')
           .attr('x', (d) => {
-
-            return x(new Date(d[0])) 
+            return x(new Date(d[0]))
           })
           .attr('y', (d) => {
             return y(d[1])
@@ -154,6 +179,9 @@ class App extends Component {
           .attr('width', barWidth)
           .attr('height', (d) => {
             return height - y(d[1])
+          })
+          .on('mouseover', (d) => {
+            this.handleHover(d)
           })
       return container.toReact()
     }
