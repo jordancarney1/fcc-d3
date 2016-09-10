@@ -17,10 +17,6 @@ h2 {
   box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12)
 }
 
-<<<<<<< HEAD
-.bar:hover {
-  fill: green;
-=======
 .card-footer {
   padding: 0 30px;
 }
@@ -37,14 +33,13 @@ h2 {
   fill: #0dff00;
 }
 
-.tooltip {	
-  position: absolute;			
-  text-align: left;							
-  padding: 4px;				
-  font: 14px Helvetica, Arial, sans-serif;		
-  background: green;	
-  border: 0px;			
-  pointer-events: none;			
+.tooltip {
+  position: absolute;
+  text-align: left;
+  padding: 4px;
+  font: 14px Helvetica, Arial, sans-serif;
+  background: green;
+  border: 0px;
+  pointer-events: none;
   color: #fff;
->>>>>>> efd92efd8e1f6b51537f826a397f8783a62567cf
 }

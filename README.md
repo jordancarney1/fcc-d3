@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-A Collaborative Programming Project for FreeCodeCamp's Data Visualaization Certificate
-=======
 A Collaborative Programming Project for FreeCodeCamp's Data Visualization Certificate
->>>>>>> efd92efd8e1f6b51537f826a397f8783a62567cf
 
 Welcome to this project. To get setup run:
 
