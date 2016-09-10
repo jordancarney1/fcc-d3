@@ -33,13 +33,13 @@ h2 {
   fill: #0dff00;
 }
 
-.tooltip {	
-  position: absolute;			
-  text-align: left;							
-  padding: 4px;				
-  font: 14px Helvetica, Arial, sans-serif;		
-  background: green;	
-  border: 0px;			
-  pointer-events: none;			
+.tooltip {
+  position: absolute;
+  text-align: left;
+  padding: 4px;
+  font: 14px Helvetica, Arial, sans-serif;
+  background: green;
+  border: 0px;
+  pointer-events: none;
   color: #fff;
 }
