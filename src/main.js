@@ -10,7 +10,7 @@ require('isomorphic-fetch');
 
 class App extends Component {
   render() {
-    return(
+    return (
       <BarChart />
     )
   }
@@ -18,7 +18,7 @@ class App extends Component {
 
 class BarChart extends Component {
 
-  constructor () {
+  constructor() {
     super()
     this.state = {
       urls: {
@@ -38,7 +38,7 @@ class BarChart extends Component {
     }
   }
 
-  handleResize () {
+  handleResize() {
     this.setState( Object.assign({}, this.state, {
       window: {
         width: window.innerWidth,
@@ -47,7 +47,7 @@ class BarChart extends Component {
     }))
   }
 
-  handleHover (d) {
+  handleHover(d) {
     const formatDate = d3.timeFormat('%Y - %B')
     const formatCurrency = d3.format('$,.2f')
     const theToolTip = document.getElementById('tool-tip')
@@ -57,7 +57,7 @@ class BarChart extends Component {
     theToolTip.style.top = (d3.event.pageY - 44) + 'px'
   }
 
-  componentDidMount () {
+  componentDidMount() {
     window.addEventListener('resize', this.handleResize.bind(this))
     fetch(this.state.urls.barChart)
       .then(res => res.json())
@@ -69,11 +69,11 @@ class BarChart extends Component {
       )
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     window.removeEventListener('resize', this.handleResize.bind(this))
   }
 
-  render () {
+  render() {
 
       // Set dimensions and margins of the page elements based on viewport dimensions
       const margin = {

@@ -9,7 +9,8 @@
   },
 
   "plugins": [
-    "react"
+    "react",
+    "import"
   ],
 
   "ecmaFeatures": {
@@ -60,6 +61,7 @@
     "generator-star-spacing": [2, "after"],
     "guard-for-in": [0],
     "handle-callback-err": [0],
+    "import/no-unresolved": [2, { "ignore": ["^[~]"] }],
     "key-spacing": [2, {"beforeColon": false, "afterColon": true}],
     "keyword-spacing": [2],
     "quotes": [2, "single", {"avoidEscape": true, "allowTemplateLiterals": true}],
@@ -170,7 +172,7 @@
     "semi": [0],
     "semi-spacing": [2, {"before": false, "after": true}],
     "sort-vars": [0],
-    "space-before-function-paren": [2, {"anonymous": "always", "named": "always"}],
+    "space-before-function-paren": [2, {"anonymous": "always", "named": "never"}],
     "space-before-blocks": [0, "always"],
     "space-in-brackets": [
       0, "never", {
