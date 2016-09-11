@@ -10,7 +10,8 @@ const mapStateToProps = state => {
   }
 }
 
-class BarChart extends Component {
+@connect(mapStateToProps)
+export default class BarChart extends Component {
 
   static defaultProps = {
     data: {}
@@ -26,5 +27,3 @@ class BarChart extends Component {
     return <div>Bar Chart Component</div>
   }
 }
-
-export default connect(mapStateToProps)(BarChart)

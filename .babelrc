@@ -12,7 +12,8 @@
      }],
       ["babel-root-import", {
         "rootPathSuffix": "src/common"
-      }]
+      }],
+      ["transform-decorators-legacy"]
     ]}
   }
 }
