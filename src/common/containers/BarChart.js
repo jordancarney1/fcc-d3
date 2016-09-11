@@ -4,13 +4,17 @@ import { connect } from 'react-redux'
 import { fetchDataIfNeeded } from '~/store/actions'
 import * as selectors from '~/store/selectors'
 
-const mapStateToProps = state => {
-  return {
-    data: selectors.getBarChartData(state)
-  }
-}
+const mapStateToProps = state => ({
+  data: selectors.getBarChartData(state)
+})
 
-@connect(mapStateToProps)
+const mapDispatchToProps = dispatch => ({
+  fetchData() {
+    dispatch(fetchDataIfNeeded('bar-chart', 'GDP-data'))
+  }
+})
+
+@connect(mapStateToProps, mapDispatchToProps)
 export default class BarChart extends Component {
 
   static defaultProps = {
@@ -18,8 +22,8 @@ export default class BarChart extends Component {
   }
 
   componentDidMount() {
-    const { dispatch } = this.props
-    dispatch(fetchDataIfNeeded('bar-chart', 'GDP-data'))
+    const { fetchData } = this.props
+    fetchData()
   }
 
   render() {
