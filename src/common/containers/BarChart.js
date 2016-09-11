@@ -1,5 +1,6 @@
-import React, { Component } from 'react'
+import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
+import R from 'ramda'
 
 import { fetchDataIfNeeded } from '~/store/actions'
 import * as selectors from '~/store/selectors'
@@ -17,6 +18,10 @@ const mapDispatchToProps = dispatch => ({
 @connect(mapStateToProps, mapDispatchToProps)
 export default class BarChart extends Component {
 
+  static propTypes = {
+    data: PropTypes.object
+  }
+
   static defaultProps = {
     data: {}
   }
@@ -28,6 +33,12 @@ export default class BarChart extends Component {
 
   render() {
     const { data } = this.props
-    return <div>Bar Chart Component</div>
+    const barChartData = R.merge(data, data.data)
+    const { source_name } = barChartData
+    return (
+      <div>
+        {source_name}
+      </div>
+    )
   }
 }

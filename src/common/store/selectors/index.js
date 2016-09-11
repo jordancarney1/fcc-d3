@@ -5,6 +5,6 @@ const barChartData = state => state.store['bar-chart']
 export const getBarChartData = createSelector(
   [ barChartData ],
   data => {
-    return R.values(data)
+    return data
   }
 )
