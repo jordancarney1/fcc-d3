@@ -14,6 +14,7 @@ const store = createStore(
   applyMiddleware(...middleware)
 )
 
-render(<Root store={store} history={browserHistory} />,
+render(
+  <Root store={store} history={browserHistory} />,
   document.querySelector('#root')
 )
