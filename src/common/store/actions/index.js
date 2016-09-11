@@ -29,11 +29,10 @@ const fetchData = (component, type) => {
 }
 
 const shouldFetchData = (state, component) => {
-  if (!state[component]) return true
-  if (!state[component].data) return true
-  if (state[component].fetching) return false
-
-  return true
+  if (!state.store[component]) return true
+  if (!state.store[component].data) return true
+  if (state.store[component].fetching) return false
+  return false
 }
 
 export const fetchDataIfNeeded = (component, type) => {
