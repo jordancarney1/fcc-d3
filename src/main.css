@@ -2,7 +2,7 @@ body {
   font-family: Helvetica, Arial, sans-serif;
   margin: 0;
   padding: 0;
-  overflow: hidden;
+  overflow-y: scroll;
 }
 
 h1,
@@ -19,27 +19,40 @@ h2 {
 
 .card-footer {
   padding: 0 30px;
+  text-align: center;
 }
 
-.bar {
+.bar,
+.circ {
   fill: #000;
+}
+
+.circ.dope {
+  fill: #f00;
 }
 
 .bar:nth-of-type(2n) {
   fill: #044400;
 }
 
-.bar:hover {
+.bar:hover,
+.circ:hover {
   fill: #0dff00;
 }
 
 .tooltip {
   position: absolute;
   text-align: left;
-  padding: 4px;
+  padding: 6px;
   font: 14px Helvetica, Arial, sans-serif;
   background: green;
   border: 0px;
   pointer-events: none;
   color: #fff;
+  transition: 0.2s;
+}
+
+.x-axis-label,
+.y-axis-label {
+  font-weight: bold;
 }
