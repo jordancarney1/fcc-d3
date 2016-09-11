@@ -1,8 +1,8 @@
 import React from 'react'
 import { Route } from 'react-router'
 
-import App from './containers/App'
-import BarChart from './components/BarChart'
+import App from './components/App'
+import BarChart from './containers/BarChart'
 
 export default (
   <Route path="/" component={App}>
