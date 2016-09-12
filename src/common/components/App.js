@@ -6,7 +6,7 @@ import ElmComponent from './ElmComponent'
 export default function App() {
   return (
     <div>
-      <ElmComponent />
+      {/* One day...<ElmComponent /> */}
       <ul>
         <li><Link to='/bar-chart'>Bar Chart</Link></li>
       </ul>
