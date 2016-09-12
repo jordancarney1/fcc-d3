@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router'
 
-import ElmComponent from './ElmComponent'
+// import ElmComponent from './ElmComponent'
 
 export default function App() {
   return (
