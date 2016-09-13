@@ -9,9 +9,10 @@ require('es6-promise').polyfill();
 require('isomorphic-fetch');
 
 //
-// APP CONTAINER 
+// APP CONTAINER
 //
 class App extends Component {
+
   constructor() {
     super()
 
@@ -34,6 +35,7 @@ class App extends Component {
   }
 
   handleResize() {
+
     this.setState(
       Object.assign(this.state, {
         window: {
@@ -53,7 +55,7 @@ class App extends Component {
   }
 
   render() {
-    return(
+    return (
       <div className="container">
         <h1>React and D3!</h1>
         <BarChart urls={this.state.urls} window={this.state.window} margin={this.state.margin} />
@@ -68,7 +70,7 @@ class App extends Component {
 //
 class BarChart extends Component {
 
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       data: false
@@ -207,7 +209,7 @@ class BarChart extends Component {
           .on('mouseover', (d) => {
             this.handleHover(d)
           })
-          .on('mouseout', d => this.handleMouseOut())
+          .on('mouseout', () => this.handleMouseOut())
 
       return card.toReact()
     }
@@ -231,8 +233,8 @@ class ScatterPlot extends Component {
 
   handleHover(d) {
     const theToolTip = document.getElementById('scatter-tool-tip')
-    theToolTip.innerHTML = '<strong>' + d.Name + '</strong> - ' + d.Nationality + 
-                           '<br>Time: ' + d.Time + 
+    theToolTip.innerHTML = '<strong>' + d.Name + '</strong> - ' + d.Nationality +
+                           '<br>Time: ' + d.Time +
                            '<br>Year: ' + d.Year +
                            '<br>' + d.Doping
     theToolTip.style.opacity = 0.9
@@ -305,8 +307,8 @@ class ScatterPlot extends Component {
       // Get Data Ready
       const dataSet = this.state.data
 
-      const formatTime = d3.timeFormat("%M:%S")
-      const formatMinutes = function(d) { 
+      const formatTime = d3.timeFormat('%M:%S')
+      const formatMinutes = function (d) {
         return formatTime( new Date( 2012, 0, 1, 0, 0, d ))
       }
 
@@ -361,13 +363,13 @@ class ScatterPlot extends Component {
         .append('circle')
           .attr('class', d => d.Doping ? 'circ dope' : 'circ')
           .attr('r', 5)
-          .attr('cx', (d) => {
-              let secondsBehind = d.Seconds - d3.min(dataSet, d => d.Seconds)
+          .attr('cx', data => {
+              let secondsBehind = data.Seconds - d3.min(dataSet, d => d.Seconds)
               return x(secondsBehind)
             })
           .attr('cy', d => y(d.Place))
           .on('mouseover', d => this.handleHover(d))
-          .on('mouseout', d => this.handleMouseOut())
+          .on('mouseout', () => this.handleMouseOut())
 
       return card.toReact()
     }

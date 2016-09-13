@@ -3,17 +3,24 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   devtool: 'eval-source-map',
-  entry: __dirname + '/src/main.js',
+  entry: __dirname + '/src/index.js',
   output: {
     path: __dirname + '/dist',
     filename: '[name]-[hash].js'
   },
 
+  resolve: {
+    moduleDirectories: ['node_modules'],
+    extensions: ['', '.js', '.elm']
+  },
+
   module: {
     loaders: [
-      { test: /\.js$/, exclude: /node_modules/, loader: 'babel' },
+      { test: /\.js$/, exclude: [/node_modules/, /elm-stuff/], loader: 'babel' },
+      { test: /\.elm$/, exclude: [/elm-stuff/, /node_modules/], loader: 'elm-webpack'},
       { test: /\.css$/, loader: 'style!css!postcss' }
-    ]
+    ],
+    noParse: /\.elm$/
   },
 
   postcss: [
