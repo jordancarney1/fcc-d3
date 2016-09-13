@@ -22,9 +22,7 @@
     "redux": "^3.6.0",
     "redux-thunk": "^2.1.0",
     "reselect": "^2.5.3",
-    "rx": "^4.1.0",
-    "rx-lite-dom-events": "^7.0.3",
-    "rxjs-es": "^5.0.0-beta.12"
+    "rx": "^4.1.0"
   },
   "devDependencies": {
     "autoprefixer": "^6.4.0",
