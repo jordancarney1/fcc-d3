@@ -5,6 +5,7 @@ import rxjs4config from 'recompose/rxjs4ObservableConfig'
 
 setObservableConfig(rxjs4config)
 
+
 const getWindowDimensions = mapPropsStream(props$ => {
   const dimensions$ = Observable
     .fromEvent(window, 'resize')
