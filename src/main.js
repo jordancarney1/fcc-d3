@@ -19,7 +19,8 @@ class App extends Component {
     this.state = {
       urls: {
         barChart: 'https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/GDP-data.json',
-        scatterPlot: 'https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/cyclist-data.json'
+        scatterPlot: 'https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/cyclist-data.json',
+        heatMap: 'https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/global-temperature.json'
       },
       margin: {
         top: 30,
@@ -376,6 +377,44 @@ class ScatterPlot extends Component {
 
     return card.toReact()
   }
+}
+
+//
+// HEAT MAP CARD
+//
+
+class HeatMap extends Component {
+  constructor() {
+    super()
+
+    this.state = {
+      data: false
+    }
+  }
+
+  handleHover(d) {
+
+  }
+
+  handleMouseOut() {
+
+  }
+
+  componentDidMount() {
+    fetch(this.props.urls.heatMap)
+      .then(res => res.json())
+      .then(data => this.setState(
+          Object.assign(this.state, {
+            data: data
+          })
+        )
+      )
+  }
+
+  render() {
+    
+  }
+
 }
 
 render(<App />, document.getElementById('root'))
