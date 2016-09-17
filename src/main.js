@@ -61,6 +61,7 @@ class App extends Component {
         <h1>React and D3!</h1>
         <BarChart urls={this.state.urls} window={this.state.window} margin={this.state.margin} />
         <ScatterPlot urls={this.state.urls} window={this.state.window} margin={this.state.margin} />
+        <HeatMap urls={this.state.urls} window={this.state.window} margin={this.state.margin} />
       </div>
     )
   }
@@ -114,7 +115,7 @@ class BarChart extends Component {
         left: this.props.margin.left
       }
       const width = this.props.window.width - 2 * (margin.left + margin.right)
-      const height = this.props.window.height / 2 - margin.top - margin.bottom
+      const height = this.props.window.height / 2 - (margin.top - margin.bottom)
 
       //Define elements for graph
       const card = ReactFauxDOM.createElement('div')
@@ -269,7 +270,7 @@ class ScatterPlot extends Component {
         left: this.props.margin.left
       }
       const width = this.props.window.width - 2 * (margin.left + margin.right)
-      const height = this.props.window.height / 2 - margin.top - margin.bottom
+      const height = this.props.window.height / 2 - (margin.top - margin.bottom)
 
       //Define elements for graph
       const card = ReactFauxDOM.createElement('div')
@@ -337,7 +338,7 @@ class ScatterPlot extends Component {
           .attr('class', 'x-axis')
           .attr('transform', 'translate(0,' + height + ')')
           .call(xAxis)
-
+      // X Axes Label
       bGraph.append('text')
           .attr('class', 'x-axis-label')
           .style('text-anchor', 'middle')
@@ -349,7 +350,7 @@ class ScatterPlot extends Component {
       bGraph.append('g')
           .attr('class', 'y-axis')
           .call(yAxis)
-
+      // Y Axes Label
       bGraph.append('text')
         .attr('class', 'y-axis-label')
         .style('text-anchor', 'end')
@@ -357,7 +358,7 @@ class ScatterPlot extends Component {
         .attr('transform', 'translate(15, 0)rotate(-90)')
         .text('Ranking')
 
-      // Chart the Dots
+      // Draw the data-points
       bGraph.selectAll('dot')
           .data(dataSet)
         .enter()
@@ -392,12 +393,19 @@ class HeatMap extends Component {
     }
   }
 
-  handleHover(d) {
-
+  handleHover(d, theYear, theTemp, theMonth) {
+    const theToolTip = document.getElementById('tool-tip')
+    theToolTip.innerHTML = '<strong>' + theYear + '</strong>' + ' - ' + theMonth + '<br />' + 
+                           '<strong>' + theTemp + ' &deg;C</strong><br />' +
+                            d3.format('.3f')(d.variance) + ' &deg;C'
+    theToolTip.style.opacity = 0.9
+    theToolTip.style.left = (d3.event.pageX + 4) + 'px'
+    theToolTip.style.top = (d3.event.pageY - 44) + 'px'
   }
 
   handleMouseOut() {
-
+    const theToolTip = document.getElementById('tool-tip')
+    theToolTip.style.opacity = 0
   }
 
   componentDidMount() {
@@ -412,7 +420,175 @@ class HeatMap extends Component {
   }
 
   render() {
+    // Set dimensions and margins of the page elements based on viewport dimensions
+    const margin = {
+      top: this.props.margin.top,
+      right: this.props.margin.right,
+      bottom: this.props.margin.bottom + 45,
+      left: this.props.margin.left + 25
+    }
+    const width = this.props.window.width - 2 * (margin.left + margin.right)
+    const height = this.props.window.height / 2 - (margin.top - margin.bottom)
+
+
+    //Define elements for graph
+    const card = ReactFauxDOM.createElement('div')
+    card.setAttribute('class', 'card')
+
+    const cardHeader = ReactFauxDOM.createElement('h2')
+    cardHeader.textContent = this.state.data ? 'Monthly Global Land-Surface Temperature' : 'Loading...'
+
+    const cardSubHeader = ReactFauxDOM.createElement('div')
+    cardSubHeader.setAttribute('class', 'card-subheader')
+    cardSubHeader.textContent = this.state.data? '1753 - 2015' : ''
     
+    const cardSubHeaderSpan = ReactFauxDOM.createElement('div')
+    cardSubHeaderSpan.setAttribute('class', 'card-subheader card-subheader-one')
+    cardSubHeaderSpan.textContent = this.state.data ? 'Temperatures are in Celsius and reported as anomalies relative to the Jan 1951-Dec 1980 average.' : ''
+
+    const cardSubHeaderSpanTwo = ReactFauxDOM.createElement('div')
+    cardSubHeaderSpanTwo.setAttribute('class', 'card-subheader card-subheader-two')
+    cardSubHeaderSpanTwo.textContent = this.state.data ? 'Estimated Jan 1951-Dec 1980 absolute temperature C: 8.66 +/- 0.07' : ''
+
+    // Begin setting up DOM elements. **There is surely a better way to organize this...
+    card.appendChild(cardHeader)
+    card.appendChild(cardSubHeader)
+    card.appendChild(cardSubHeaderSpan)
+    card.appendChild(cardSubHeaderSpanTwo)
+
+    if (this.state.data) {
+
+      const graph = ReactFauxDOM.createElement('svg')
+      graph.setAttribute('width', width + margin.left + margin.right)
+      graph.setAttribute('height', height + margin.top + margin.bottom)
+
+      // Define the div for the tooltip
+      const toolTip = ReactFauxDOM.createElement('div')
+      toolTip.setAttribute('class', 'tooltip')
+      toolTip.setAttribute('id', 'heatmap-tool-tip')
+      toolTip.style.setProperty('opacity', 0)
+
+      //Build DOM for graph structure. **There is surely a better way to organize this...
+      card.appendChild(toolTip)
+      card.appendChild(graph)
+
+      // Get Data Ready
+      const dataSet = this.state.data.monthlyVariance
+      const baseTemp = this.state.data.baseTemperature
+
+      // Years (X)
+      const years = dataSet.map( d => new Date(d.year, 0))
+      const formatYear = d3.timeFormat('%Y')
+      const minYear = d3.min(years)
+      const maxYear = d3.max(years)
+
+      // Months (Y)
+      const months = dataSet.map( d => new Date(0, d.month-1))
+      const formatMonth = d3.timeFormat('%B')
+      const minMonth = d3.min(months)
+      const maxMonth = d3.max(months)
+
+      // Temps (Color)
+      const temps = dataSet.map( d => (baseTemp + d.variance))
+      const colorRange = ['#2433FF', '#3C2EE3', '#542AC7', '#6D26AB', '#85228F', '#9D1D74', '#B61958', '#CE153C', '#E61120', '#FF0D05']
+      
+      // Bar Sizes
+      const barWidth = Math.ceil(width / (maxYear.getFullYear() - minYear.getFullYear()))
+      const barHeight = Math.ceil(height / (maxMonth.getMonth() - minMonth.getMonth()))
+
+      // Define scaling for graph
+      const x = d3.scaleTime()
+        .domain([minYear, maxYear])
+        .rangeRound([0, width])
+
+      const y = d3.scaleTime()
+        .domain([minMonth, maxMonth])
+        .rangeRound([height, 0])
+
+      const colorFill = d3.scaleQuantize()
+        .domain(d3.extent(temps))
+        .range(colorRange)
+
+      // Define the axes
+      const xAxis = d3.axisBottom(x).tickFormat(formatYear)
+
+      const yAxis = d3.axisLeft(y).tickFormat(formatMonth)
+
+      //Draw the Graph!
+      const heatMap = d3.select(graph)
+        .append('g')
+          .attr('class', 'graph')
+          .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+
+      // Draw the X axis
+      heatMap.append('g')
+          .attr('class', 'x-axis')
+          .attr('transform', 'translate(0,' + (height + (barHeight / 2)) + ')')
+          .call(xAxis)
+
+      // Draw the Y axis
+      heatMap.append('g')
+          .attr('class', 'y-axis')
+          .call(yAxis)
+
+      // Draw the data-points
+      heatMap.selectAll('rect')
+        .data(dataSet)
+        .enter()
+        .append('rect')
+          .attr('class', 'heat-bar')
+          .attr('x', d => x(new Date(d.year, 0)))
+          .attr('y', d => y(new Date(0, d.month-1)) - (barHeight / 2))
+          .attr('width', barWidth)
+          .attr('height', barHeight)
+          .attr('fill', d => colorFill( d.variance + baseTemp ))
+          .on('mouseover', (d) => {
+            let theYear = d.year
+            let theTemp = d3.format('.3f')(d.variance + baseTemp)
+            let theMonth = formatMonth(new Date(0, d.month - 1))
+            this.handleHover(d, theYear, theTemp, theMonth )
+          })
+          .on('mouseout', d => this.handleMouseOut())
+
+      // Legend for heat map
+      const legendRectSize = 20
+      const keys = colorRange.length
+      const legend = d3.select(graph)
+        .append('g')
+          .attr('class', 'legend')
+      
+      // Minimum Range
+      legend.append('text')
+          .attr('class', 'range-min')
+          .attr('x', (width - legendRectSize * keys ) - 40)
+          .attr('y', height + 79)
+          .text( d3.format('.3f')(d3.min(dataSet.map( d => d.variance))))
+
+      // Color Scale
+      legend.selectAll('rect')
+          .data(colorFill.range())
+          .enter()
+        .append('rect')
+          .attr('class', 'key')
+          .attr('x', (d, i) => {
+            return legendRectSize * i + ( width - legendRectSize * keys )
+          })
+          .attr('y', height + 70)
+          .attr('width', legendRectSize)
+          .attr('height', legendRectSize / 2)
+          .style('fill', d => d)
+          .style('stroke', '#fff')
+      // Maximum Range
+      legend.append('text')
+          .attr('class', 'range-max')
+          .attr('x', (width - legendRectSize ) + 27)
+          .attr('y', height + 79)
+          .text( d3.format('.3f')(d3.max(dataSet.map( d => d.variance))))
+
+      return card.toReact()
+    }
+
+    return card.toReact()
   }
 
 }

@@ -6,8 +6,13 @@ body {
 }
 
 h1,
-h2 {
+h2,
+p {
   text-align: center;
+}
+
+h2 {
+  margin-bottom: 0;
 }
 
 .card {
@@ -36,7 +41,8 @@ h2 {
 }
 
 .bar:hover,
-.circ:hover {
+.circ:hover,
+.heat-bar:hover {
   fill: #0dff00;
 }
 
@@ -55,4 +61,18 @@ h2 {
 .x-axis-label,
 .y-axis-label {
   font-weight: bold;
+}
+
+/* Heat Map */
+.card-subheader {
+  text-align: center;
+}
+
+.card-subheader-one,
+.card-subheader-two {
+  font-size: 12px;
+}
+
+.legend {
+  font-size: 12px;
 }
