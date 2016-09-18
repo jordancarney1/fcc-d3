@@ -20,7 +20,8 @@ class App extends Component {
       urls: {
         barChart: 'https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/GDP-data.json',
         scatterPlot: 'https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/cyclist-data.json',
-        heatMap: 'https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/global-temperature.json'
+        heatMap: 'https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/global-temperature.json',
+        forceGraph: 'https://raw.githubusercontent.com/DealPete/forceDirected/master/countries.json'
       },
       margin: {
         top: 30,
@@ -36,7 +37,6 @@ class App extends Component {
   }
 
   handleResize() {
-
     this.setState(
       Object.assign(this.state, {
         window: {
@@ -62,6 +62,7 @@ class App extends Component {
         <BarChart urls={this.state.urls} window={this.state.window} margin={this.state.margin} />
         <ScatterPlot urls={this.state.urls} window={this.state.window} margin={this.state.margin} />
         <HeatMap urls={this.state.urls} window={this.state.window} margin={this.state.margin} />
+        <ForceGraph url={this.state.urls.forceGraph} window={this.state.window} margin={this.state.margin} />
       </div>
     )
   }
@@ -591,6 +592,147 @@ class HeatMap extends Component {
     return card.toReact()
   }
 
+}
+
+//
+// FORCE-DIRECTED GRAPH
+//
+class ForceGraph extends Component {
+
+  componentDidMount() {
+    const margin = {
+      top: this.props.margin.top,
+      right: this.props.margin.right,
+      bottom: this.props.margin.bottom,
+      left: this.props.margin.left
+    }
+    const width = this.props.window.width - 2 * (margin.left + margin.right)
+    const height = this.props.window.height / 2 - (margin.top - margin.bottom)
+    const radius = 0
+
+    const simulation = d3.forceSimulation()
+    .force('link', d3.forceLink().id( (d, i) => { return i }))
+    .force('charge', d3.forceManyBody().strength(-2))
+    .force('center', d3.forceCenter(width / 2, height / 2))
+
+    const svg = d3.select(this.refs.d3Mount)
+    svg.append('div')
+          .attr('class', 'nodes')
+
+    svg.append('svg')
+        .attr('class', 'link-box')
+        .attr('width', width + margin.left + margin.right)
+        .attr('height', height + margin.top + margin.bottom)
+
+    svg.append('div')
+      .attr('id', 'force-tool-tip')
+
+    d3.json(this.props.url, function(error, graph) {
+      if (error) throw error;
+
+      const node = d3.select('.nodes')
+        .selectAll('div')
+        .data(graph.nodes)
+        .enter()
+        .append('div')
+          .attr('class', (d) => {
+            return 'flag ' + d.code
+          })
+          .call(d3.drag()
+              .on('start', dragstarted)
+              .on('drag', dragged)
+              .on('end', dragended))
+          .on('mouseover', (d) => { handleHover(d) })
+          .on('mouseout', (d) => { handleMouseOut(d) })
+
+      const link = d3.select('.link-box').append('g')
+          .attr('class', 'links')
+        .selectAll('line')
+        .data(graph.links)
+        .enter()
+        .append('line')
+          .attr('stroke-width', 1)
+
+      simulation
+          .nodes(graph.nodes)
+          .on('tick', ticked);
+
+      simulation.force('link')
+          .links(graph.links);
+
+      resize()
+      d3.select(window).on('resize', resize)
+
+      function ticked() {
+        link
+            .attr('x1', function(d) { return d.source.x })
+            .attr('y1', function(d) { return d.source.y })
+            .attr('x2', function(d) { return d.target.x })
+            .attr('y2', function(d) { return d.target.y })
+
+        node
+            .attr('cx', function(d) { return d.x = Math.max(radius, Math.min(width - radius, d.x)) })
+            .attr('cy', function(d) { return d.y = Math.max(radius, Math.min(height - radius, d.y)) })
+            .attr('style', function(d) { 
+              let styleString =  'left:' + Math.max(radius, Math.min(width - radius, d.x)) + 'px; ' +
+                'top:' + Math.max(radius, Math.min(height - radius, d.y)) + 'px;'
+              return styleString
+            })
+      }
+
+      function resize() {
+        const width = window.innerWidth - 2 * (margin.left + margin.right)
+        const height = window.innerHeight / 2 - (margin.top - margin.bottom)
+
+        d3.select('.link-box')
+          .attr('width', width + margin.left + margin.right)
+          .attr('height', height + margin.top + margin.bottom)
+
+        simulation.force('center')
+          .x(width / 2)
+          .y(height / 2)
+        }
+
+        function handleHover(d) {
+          const theToolTip = document.getElementById('force-tool-tip')
+          theToolTip.innerHTML = '<strong>' + d.country + '</strong>'
+          theToolTip.style.opacity = 0.9
+          theToolTip.style.left = (d3.event.pageX + 4) + 'px'
+          theToolTip.style.top = (d3.event.pageY - 40) + 'px'
+        }
+
+        function handleMouseOut() {
+          const theToolTip = document.getElementById('force-tool-tip')
+          theToolTip.style.opacity = 0
+        }
+    })// End d3 fetch data
+
+    function dragstarted(d) {
+      if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+      d.fx = d.x
+      d.fy = d.y
+    }
+
+    function dragged(d) {
+      d.fx = d3.event.x
+      d.fy = d3.event.y
+    }
+
+    function dragended(d) {
+      if (!d3.event.active) simulation.alphaTarget(0);
+      d.fx = null
+      d.fy = null
+    }
+  }
+
+  render() {
+
+    return (
+      <div className="card" id="forceGraph" ref="d3Mount">
+        <h2>National Contiguity</h2>
+      </div>
+    )
+  }
 }
 
 render(<App />, document.getElementById('root'))
