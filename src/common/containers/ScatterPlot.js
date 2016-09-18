@@ -25,11 +25,11 @@ const mapDispatchToProps = dispatch => ({
 export default class ScatterPlot extends Component {
 
   static propTypes = {
-    data: PropTypes.object
+    data: PropTypes.array
   }
 
   static defaultProps = {
-    data: {}
+    data: []
   }
 
   componentDidMount() {

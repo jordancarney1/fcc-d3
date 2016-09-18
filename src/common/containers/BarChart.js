@@ -3,7 +3,12 @@ import { compose } from 'recompose'
 
 import { windowDimensions, fetchData } from '~/hocs'
 
-const BarChart = ({ data, window }) => {
+const enhance = compose(
+  windowDimensions,
+  fetchData({ name: 'GDP-data' })
+)
+
+const BarChart = enhance(({ data, window }) => {
   const { height, width } = window
   const { source_name } = data
   return (
@@ -15,7 +20,7 @@ const BarChart = ({ data, window }) => {
       {width}
     </div>
   )
-}
+})
 
 BarChart.defaultProps = {
   data: {}
@@ -25,7 +30,4 @@ BarChart.propTypes = {
   data: PropTypes.object
 }
 
-export default compose(
-  windowDimensions,
-  fetchData({ name: 'GDP-data'})
-)(BarChart)
+export default BarChart
