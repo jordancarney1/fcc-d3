@@ -3,11 +3,7 @@ import { compose } from 'recompose'
 
 import { windowDimensions, fetchData } from '~/hocs'
 
-const enhance = compose(
-  windowDimensions,
-  fetchData({ name: 'GDP-data' })
-)
-
+const enhance = compose(windowDimensions, fetchData({ name: 'GDP-data' }))
 const BarChart = enhance(({ data, window }) => {
   const { height, width } = window
   const { source_name } = data
