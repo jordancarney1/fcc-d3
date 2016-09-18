@@ -1,10 +1,11 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { mapProps } from 'recompose'
+import R from 'ramda'
 
 import { fetchDataIfNeeded } from '~/store/actions'
 import * as selectors from '~/store/selectors'
-import { windowDimensions } from '~/hocs'
+import { windowDimensions, spinnerWhileLoading } from '~/hocs'
 
 const mapStateToProps = state => {
   const getResource = selectors.getResource('scatter-plot')
@@ -22,6 +23,7 @@ const mapDispatchToProps = dispatch => ({
 @windowDimensions
 @connect(mapStateToProps, mapDispatchToProps)
 @mapProps(({ data, ...props}) => ({ ...data, ...props}))
+@spinnerWhileLoading(({ data }) => !R.isEmpty(data))
 export default class ScatterPlot extends Component {
 
   static propTypes = {
