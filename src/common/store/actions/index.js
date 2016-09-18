@@ -1,6 +1,9 @@
 export const REQUEST_DATA = 'REQUEST_DATA'
 export const RECEIVE_DATA = 'RECEIVE_DATA'
 
+require('es6-promise').polyfill()
+require('isomorphic-fetch')
+
 export const requestData = component => {
   return {
     type: REQUEST_DATA,
