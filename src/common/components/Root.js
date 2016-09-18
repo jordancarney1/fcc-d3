@@ -1,20 +1,14 @@
 import React, { PropTypes } from 'react'
 import { Provider } from 'react-redux'
-import { Router, Route } from 'react-router'
+import { Router } from 'react-router'
 
-import App from './App'
-import BarChart from '~/containers/BarChart'
-import ScatterPlot from '~/containers/ScatterPlot'
+import routes from '~/routes'
 
 export default function Root({ store, history }) {
   return (
     <Provider store={store}>
       <div>
-        <Router history={history}>
-          <Route path='/' component={App} />
-          <Route path='/bar-chart' component={BarChart} />
-          <Route path='/scatter-plot' component={ScatterPlot} />
-        </Router>
+        <Router history={history} routes={routes} />
       </div>
     </Provider>
   )
