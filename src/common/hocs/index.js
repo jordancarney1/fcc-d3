@@ -11,6 +11,6 @@ export const windowDimensions = mapPropsStream(props$ => {
     .startWith({ width: window.innerWidth, height: window.innerHeight})
   return props$.combineLatest(dimensions$, (props, values) => ({
     ...props,
-    values
+    window: {...values}
   }))
 })
