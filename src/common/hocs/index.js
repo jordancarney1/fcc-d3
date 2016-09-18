@@ -1,6 +1,8 @@
+import React from 'react'
 import { Observable } from 'rx'
-import { mapPropsStream, setObservableConfig } from 'recompose'
+import { mapPropsStream, setObservableConfig, branch, renderComponent } from 'recompose'
 import rxjs4config from 'recompose/rxjs4ObservableConfig'
+import Spinner from 'react-spinkit'
 
 require('es6-promise').polyfill()
 require('isomorphic-fetch')
@@ -42,3 +44,25 @@ export const fetchData = resource => mapPropsStream(props$ => {
     data
   }))
 })
+
+const styles = {
+  spinner: {
+    height: '100vh',
+    width: '100vw',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
+}
+
+const SpinnerThreeBounce = () =>
+  <div style={styles.spinner}>
+    <Spinner spinnerName="three-bounce" noFadeIn />
+  </div>
+
+export const spinnerWhileLoading = hasLoaded =>
+  branch(
+    hasLoaded,
+    t => t,
+    renderComponent(SpinnerThreeBounce)
+  )
