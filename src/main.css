@@ -47,7 +47,8 @@ h2 {
 }
 
 .tooltip, 
-#force-tool-tip {
+#force-tool-tip,
+#map-tool-tip {
   position: absolute;
   text-align: left;
   padding: 6px;
@@ -349,3 +350,28 @@ h2 {
 .flag.zm {background-position: -192px -165px}
 .flag.zw {background-position: -208px -165px}
 
+/* METEOR MAP */
+.stroke {
+  fill: none;
+  stroke: #000;
+  stroke-width: 3px;
+}
+
+.fill {
+  fill: #fff;
+}
+
+.graticule {
+  fill: none;
+  stroke: none;
+}
+
+.land {
+  fill: #336600;
+}
+
+.boundary {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 0.5px;
+}

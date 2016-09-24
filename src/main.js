@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { render } from 'react-dom'
 import * as d3 from 'd3'
 import ReactFauxDOM from 'react-faux-dom'
+import * as topojson from 'topojson'
+
 
 import './main.css'
 
@@ -21,7 +23,8 @@ class App extends Component {
         barChart: 'https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/GDP-data.json',
         scatterPlot: 'https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/cyclist-data.json',
         heatMap: 'https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/global-temperature.json',
-        forceGraph: 'https://raw.githubusercontent.com/DealPete/forceDirected/master/countries.json'
+        forceGraph: 'https://raw.githubusercontent.com/DealPete/forceDirected/master/countries.json',
+        meteorMap: 'https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/meteorite-strike-data.json'
       },
       margin: {
         top: 30,
@@ -63,6 +66,7 @@ class App extends Component {
         <ScatterPlot urls={this.state.urls} window={this.state.window} margin={this.state.margin} />
         <HeatMap urls={this.state.urls} window={this.state.window} margin={this.state.margin} />
         <ForceGraph url={this.state.urls.forceGraph} window={this.state.window} margin={this.state.margin} />
+        <MeteorMap url={this.state.urls.meteorMap} window={this.state.window} margin={this.state.margin} />
       </div>
     )
   }
@@ -730,6 +734,143 @@ class ForceGraph extends Component {
     return (
       <div className="card" id="forceGraph" ref="d3Mount">
         <h2>National Contiguity</h2>
+      </div>
+    )
+  }
+}
+
+class MeteorMap extends Component {
+  componentDidMount() {
+    const margin = {
+      top: this.props.margin.top,
+      right: this.props.margin.right,
+      bottom: this.props.margin.bottom,
+      left: this.props.margin.left
+    }
+    const width = this.props.window.width - 2 * (margin.left + margin.right)
+    const height = this.props.window.height / 2 - (margin.top - margin.bottom)
+
+    var svg = d3.select(this.refs.mapMount)
+    svg.append('svg')
+        .attr('id', 'map')
+        .attr('width', width)
+        .attr('height', height)
+
+    svg.append('div')
+      .attr('id', 'map-tool-tip')
+
+    var projection = d3.geoMercator()
+        .scale(width/20)
+        .translate([width / 2, height / 2]);
+
+    var path = d3.geoPath()
+        .projection(projection);
+
+    var graticule = d3.geoGraticule();
+    
+    const map = d3.select('#map')
+
+    map.append("defs").append("path")
+        .datum({type: "Sphere"})
+        .attr("id", "sphere")
+        .attr("d", path);
+
+    map.append("use")
+        .attr("class", "stroke")
+        .attr("xlink:href", "#sphere");
+
+    map.append("use")
+        .attr("class", "fill")
+        .attr("xlink:href", "#sphere");
+
+    map.append("path")
+        .datum(graticule)
+        .attr("class", "graticule")
+        .attr("d", path);
+
+    // WORLD MAP
+    d3.json('https://raw.githubusercontent.com/mbostock/topojson/master/examples/world-50m.json', function(error, world) {
+      if (error) throw error
+
+      map.append('g')
+        .selectAll('path')
+        .data(topojson.feature(world, world.objects.countries).features)
+        .enter()
+          .append('path')
+          .attr('fill', '#336600')
+          .attr('stroke', '#fff')
+          .attr('d', path)
+
+       // METEOR STRIKES
+       d3.json('https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/meteorite-strike-data.json', function(error, meteorJson) {
+        if (error) throw error
+
+        const masses = meteorJson.features.map( (d) => {
+          if ( d.properties.mass == null ) { return 2 }
+          return parseInt(d.properties.mass)
+        })
+
+        const m = function(d) {
+          if ( d <= 1000 ) return 2
+          if ( d <= 5000 ) return 3
+          if ( d <= 10000 ) return 4
+          if ( d <= 20000 ) return 5
+          if ( d <= 50000 ) return 6
+          if ( d <= 100000 ) return 7
+          if ( d <= 500000 ) return 8
+          if ( d <= 1000000 ) return 10
+          return 16;
+        }
+
+
+        map.append('g')
+          .selectAll('path')
+          .data(meteorJson.features)
+          .enter()
+            .append('circle')
+              .attr('class', 'meteor-strike')
+              .attr('cx', (d) => {
+                return projection([d.properties.reclong, d.properties.reclat])[0]
+              })
+              .attr('cy', (d) => {
+                return projection([d.properties.reclong, d.properties.reclat])[1]
+              })
+              .attr('r', ( d => m(d.properties.mass) ))
+              .attr('fill', '#ff0000')
+              .attr('opacity', 0.3)
+              .attr('stroke-width', 1)
+              .attr('stroke', '#000')
+              .on('mouseover', handleMouseOver)
+              .on('mouseout', handleMouseOut)
+
+
+        function handleMouseOver(d) {
+
+          d3.select(this).attr('opacity', 1)
+          const theToolTip = document.getElementById('map-tool-tip')
+          theToolTip.innerHTML = '<strong>' + d.properties.name + '</strong><br>' +
+                                'ID: ' + d.properties.id + '<br>' +
+                                'Mass: ' + d.properties.mass + '<br>' +
+                                d.properties.fall + '<br>' +
+                                new Date(d.properties.year).getFullYear() + '<br>'
+          theToolTip.style.opacity = 0.9
+          theToolTip.style.left = (d3.event.pageX + 4) + 'px'
+          theToolTip.style.top = (d3.event.pageY - 40) + 'px'
+        }
+
+        function handleMouseOut(d) {
+          d3.select(this).attr('opacity', 0.3)
+          const theToolTip = document.getElementById('map-tool-tip')
+          theToolTip.style.opacity = 0
+        }
+      })    
+    })  
+  }
+
+  render() {
+    return(
+      <div className="card" id="meteor-map" ref="mapMount">
+        <h2>Meteor Strikes</h2>
       </div>
     )
   }
