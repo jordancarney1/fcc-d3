@@ -1,13 +1,21 @@
-import React from 'react'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { Observable } from 'rx'
 import { mapPropsStream, setObservableConfig, branch, renderComponent } from 'recompose'
+import { fetchDataIfNeeded } from '~/store/actions'
 import rxjs4config from 'recompose/rxjs4ObservableConfig'
 import Spinner from 'react-spinkit'
+
+import * as selectors from '~/store/selectors'
 
 require('es6-promise').polyfill()
 require('isomorphic-fetch')
 
 setObservableConfig(rxjs4config)
+
+const URI_CONFIG = {
+  'heat-map': 'global-temperature'
+}
 
 export const windowDimensions = mapPropsStream(props$ => {
   const dimensions$ = Observable
@@ -66,3 +74,32 @@ export const spinnerWhileLoading = hasLoaded =>
     t => t,
     renderComponent(SpinnerThreeBounce)
   )
+
+export const getData = WrappedComponent =>
+  class extends Component {
+
+    componentDidMount() {
+      const { dispatch, params } = this.props
+      const { slug } = params
+      dispatch(fetchDataIfNeeded(slug, URI_CONFIG[slug]))
+    }
+
+    render() {
+      return <WrappedComponent {...this.props} />
+    }
+  }
+
+const mapStateToProps = (state, props) => {
+  const { params } = props
+  const { slug } = params
+  const getResource = selectors.getResource(slug)
+  return {
+    data: getResource(state)
+  }
+}
+
+const mapDispatchToProps = dispatch => ({
+  dispatch
+})
+
+export const connectComponent = connect(mapStateToProps, mapDispatchToProps)
