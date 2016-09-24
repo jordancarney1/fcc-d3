@@ -351,6 +351,10 @@ h2 {
 .flag.zw {background-position: -208px -165px}
 
 /* METEOR MAP */
+#meteor-map {
+  min-height: 600px;
+}
+
 .stroke {
   fill: none;
   stroke: #000;
@@ -375,3 +379,4 @@ h2 {
   stroke: #fff;
   stroke-width: 0.5px;
 }
+

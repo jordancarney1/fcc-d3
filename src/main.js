@@ -741,32 +741,27 @@ class ForceGraph extends Component {
 
 class MeteorMap extends Component {
   componentDidMount() {
-    const margin = {
-      top: this.props.margin.top,
-      right: this.props.margin.right,
-      bottom: this.props.margin.bottom,
-      left: this.props.margin.left
-    }
-    const width = this.props.window.width - 2 * (margin.left + margin.right)
-    const height = this.props.window.height / 2 - (margin.top - margin.bottom)
-
-    var svg = d3.select(this.refs.mapMount)
+    const width = document.getElementById('meteor-map').clientWidth
+    const height = document.getElementById('meteor-map').clientHeight
+    const svg = d3.select(this.refs.mapMount)
     svg.append('svg')
         .attr('id', 'map')
-        .attr('width', width)
+        .attr('width', '100%')
         .attr('height', height)
 
     svg.append('div')
       .attr('id', 'map-tool-tip')
 
-    var projection = d3.geoMercator()
-        .scale(width/20)
-        .translate([width / 2, height / 2]);
+    const projection = d3.geoMercator()
+        //.scale(width/20)
+        .scale(300)
+        .translate([900, 700])
+        //.translate([width / 2, height / 2]);
 
-    var path = d3.geoPath()
+    const path = d3.geoPath()
         .projection(projection);
 
-    var graticule = d3.geoGraticule();
+    const graticule = d3.geoGraticule();
     
     const map = d3.select('#map')
 
@@ -793,6 +788,8 @@ class MeteorMap extends Component {
       if (error) throw error
 
       map.append('g')
+        .attr('class', 'meteor-g')
+        .attr("transform", "scale(" + width/1900 + ")")
         .selectAll('path')
         .data(topojson.feature(world, world.objects.countries).features)
         .enter()
@@ -824,6 +821,8 @@ class MeteorMap extends Component {
 
 
         map.append('g')
+          .attr('class', 'meteor-g')
+          .attr("transform", "scale(" + width/1900 + ")")
           .selectAll('path')
           .data(meteorJson.features)
           .enter()
@@ -863,13 +862,31 @@ class MeteorMap extends Component {
           const theToolTip = document.getElementById('map-tool-tip')
           theToolTip.style.opacity = 0
         }
-      })    
-    })  
+      })   
+
+      // Resize map on window resize
+      // Save the scatterplot first
+      window.addEventListener('resize', sizeChange)
+      function sizeChange() {
+        const width = document.getElementById('meteor-map').clientWidth
+        d3.selectAll(".meteor-g").attr("transform", "scale(" + width/1900 + ")")
+        d3.select('.map').attr('height', width/2)
+      } 
+    })   
   }
 
   render() {
+    const margin = {
+      top: this.props.margin.top,
+      right: this.props.margin.right,
+      bottom: this.props.margin.bottom,
+      left: this.props.margin.left
+    }
+    const width = this.props.window.width - 2 * (margin.left + margin.right)
+    const height = this.props.window.height / 2 - (margin.top - margin.bottom)
+
     return(
-      <div className="card" id="meteor-map" ref="mapMount">
+      <div className="card" id="meteor-map" ref="mapMount" width={width} height="400">
         <h2>Meteor Strikes</h2>
       </div>
     )
