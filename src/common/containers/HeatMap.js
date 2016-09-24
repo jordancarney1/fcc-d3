@@ -15,5 +15,6 @@ const enhance = compose(
 const Component = componentFromProp('chart')
 
 export default enhance(props =>
+  // This is the same as <HeatMap {...props} />
   <Component chart={HeatMap} {...props} />
 )

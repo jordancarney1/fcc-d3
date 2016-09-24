@@ -13,10 +13,13 @@ require('isomorphic-fetch')
 
 setObservableConfig(rxjs4config)
 
+// What each chart maps to in regards to the FCC data endpoint
 const URI_CONFIG = {
   'heat-map': 'global-temperature'
 }
 
+// Emits an observable of window dimensions
+// This needs to be updated to emit margins based on window dimensions
 export const windowDimensions = mapPropsStream(props$ => {
   const dimensions$ = Observable
     .fromEvent(window, 'resize')
@@ -28,6 +31,8 @@ export const windowDimensions = mapPropsStream(props$ => {
   }))
 })
 
+// This is a promise that fetches data
+// It will also store the data in either localStorage or sessionStorage
 const fetchDataSet = resource =>
   new Promise((resolve, reject) => {
     if (!window[resource.storage].getItem(resource.name)) {
@@ -45,6 +50,7 @@ const fetchDataSet = resource =>
     }
   })
 
+// Emits an Observable from a promise
 export const fetchData = resource => mapPropsStream(props$ => {
   const promise$ = Observable.fromPromise(fetchDataSet(resource))
   return props$.combineLatest(promise$, (props, data) => ({
@@ -53,6 +59,7 @@ export const fetchData = resource => mapPropsStream(props$ => {
   }))
 })
 
+// Styles for the spinner below
 const styles = {
   spinner: {
     height: '100vh',
@@ -63,11 +70,13 @@ const styles = {
   }
 }
 
+// A named component that takes from the react-spinkit library
 const SpinnerThreeBounce = () =>
   <div style={styles.spinner}>
     <Spinner spinnerName="three-bounce" noFadeIn />
   </div>
 
+// This is the HOC that will render either the Spinner or BaseComponent based on a hasLoaded condition
 export const spinnerWhileLoading = hasLoaded =>
   branch(
     hasLoaded,
@@ -75,6 +84,8 @@ export const spinnerWhileLoading = hasLoaded =>
     renderComponent(SpinnerThreeBounce)
   )
 
+// This is a HOC that works with the Redux store
+// This allows us to abstract away using lifecycle methods in our BaseComponent
 export const getData = WrappedComponent =>
   class extends Component {
 
@@ -102,4 +113,5 @@ const mapDispatchToProps = dispatch => ({
   dispatch
 })
 
+// This is the HOC that encompases all that the getData HOC needs from the store
 export const connectComponent = connect(mapStateToProps, mapDispatchToProps)
