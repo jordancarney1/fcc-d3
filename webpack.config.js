@@ -1,5 +1,6 @@
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
+var ProgressBarPlugin = require('progress-bar-webpack-plugin');
 
 module.exports = {
   devtool: 'eval-source-map',
@@ -31,11 +32,13 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: __dirname + '/dist/index.html'
     }),
-    new webpack.HotModuleReplacementPlugin()
+    new webpack.HotModuleReplacementPlugin(),
+    new ProgressBarPlugin()
   ],
 
   devServer: {
     contentBase: './dist',
+    stats: { chunks: false },
     colors: true,
     historyApiFallback: true,
     inline: true
