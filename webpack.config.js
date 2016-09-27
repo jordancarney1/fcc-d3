@@ -4,7 +4,7 @@ var ProgressBarPlugin = require('progress-bar-webpack-plugin');
 
 module.exports = {
   devtool: 'eval-source-map',
-  entry: __dirname + '/src/index.js',
+  entry: __dirname + '/src/main.js',
   output: {
     path: __dirname + '/dist',
     filename: '[name]-[hash].js'
