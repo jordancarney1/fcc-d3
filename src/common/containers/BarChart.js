@@ -1,40 +1,35 @@
-import React, { Component, PropTypes } from 'react'
-import { connect } from 'react-redux'
+import React, { PropTypes } from 'react'
+import { compose } from 'recompose'
 import R from 'ramda'
 
-import { fetchDataIfNeeded } from '~/store/actions'
-import * as selectors from '~/store/selectors'
+import { windowDimensions, fetchData, spinnerWhileLoading } from '~/hocs'
 
-const mapStateToProps = state => ({
-  data: selectors.getBarChartData(state)
+const enhance = compose(
+  windowDimensions,
+  fetchData({ name: 'GDP-data', storage: 'localStorage' }),
+  spinnerWhileLoading(({ data }) => !R.isEmpty(data))
+)
+const BarChart = enhance(({ data, window }) => {
+  const { height, width } = window
+  const { source_name } = data
+  return (
+    <div>
+      {source_name}
+      <br />
+      {height}
+      <br />
+      {width}
+    </div>
+  )
 })
 
-const mapDispatchToProps = dispatch => ({
-  fetchData() {
-    dispatch(fetchDataIfNeeded('bar-chart', 'GDP-data'))
-  }
-})
-
-@connect(mapStateToProps, mapDispatchToProps)
-export default class BarChart extends Component {
-
-  static propTypes = {
-    data: PropTypes.object
-  }
-
-  componentDidMount() {
-    const { fetchData } = this.props
-    fetchData()
-  }
-
-  render() {
-    const { data } = this.props
-    const barChartData = R.merge(data, data.data)
-    const { source_name } = barChartData
-    return (
-      <div>
-        {source_name}
-      </div>
-    )
-  }
+BarChart.defaultProps = {
+  data: {}
 }
+
+
+BarChart.propTypes = {
+  data: PropTypes.object
+}
+
+export default BarChart

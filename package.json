@@ -18,6 +18,7 @@
     "react-faux-dom": "^2.7.1",
     "react-redux": "^4.4.5",
     "react-router": "^2.8.0",
+    "react-spinkit": "^1.1.11",
     "recompose": "^0.20.2",
     "redux": "^3.6.0",
     "redux-thunk": "^2.1.0",
@@ -47,6 +48,7 @@
     "html-webpack-plugin": "^2.22.0",
     "mocha": "^3.0.2",
     "postcss-loader": "^0.10.1",
+    "progress-bar-webpack-plugin": "^1.9.0",
     "react-transform-hmr": "^1.0.4",
     "style-loader": "^0.13.1",
     "webpack": "^1.13.2",
@@ -54,7 +56,7 @@
   },
   "scripts": {
     "build": "webpack",
-    "start": "webpack-dev-server --progress",
+    "start": "webpack-dev-server -d --display-error-details",
     "test": "mocha --compilers js:babel-register --require babel-polyfill --recursive src/test"
   },
   "repository": {

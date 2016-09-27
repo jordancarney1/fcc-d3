@@ -1,10 +1,7 @@
 import { createSelector } from 'reselect'
-import R from 'ramda'
 
-const barChartData = state => state.store['bar-chart']
-export const getBarChartData = createSelector(
-  [ barChartData ],
-  data => {
-    return data
-  }
+const getData = name => state => state.store[name]
+export const getResource = name => createSelector(
+  [ getData(name) ],
+  data => data
 )

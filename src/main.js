@@ -400,7 +400,7 @@ class HeatMap extends Component {
 
   handleHover(d, theYear, theTemp, theMonth) {
     const theToolTip = document.getElementById('tool-tip')
-    theToolTip.innerHTML = '<strong>' + theYear + '</strong>' + ' - ' + theMonth + '<br />' + 
+    theToolTip.innerHTML = '<strong>' + theYear + '</strong>' + ' - ' + theMonth + '<br />' +
                            '<strong>' + theTemp + ' &deg;C</strong><br />' +
                             d3.format('.3f')(d.variance) + ' &deg;C'
     theToolTip.style.opacity = 0.9
@@ -445,8 +445,8 @@ class HeatMap extends Component {
 
     const cardSubHeader = ReactFauxDOM.createElement('div')
     cardSubHeader.setAttribute('class', 'card-subheader')
-    cardSubHeader.textContent = this.state.data? '1753 - 2015' : ''
-    
+    cardSubHeader.textContent = this.state.data ? '1753 - 2015' : ''
+
     const cardSubHeaderSpan = ReactFauxDOM.createElement('div')
     cardSubHeaderSpan.setAttribute('class', 'card-subheader card-subheader-one')
     cardSubHeaderSpan.textContent = this.state.data ? 'Temperatures are in Celsius and reported as anomalies relative to the Jan 1951-Dec 1980 average.' : ''
@@ -488,7 +488,7 @@ class HeatMap extends Component {
       const maxYear = d3.max(years)
 
       // Months (Y)
-      const months = dataSet.map( d => new Date(0, d.month-1))
+      const months = dataSet.map( d => new Date(0, d.month - 1))
       const formatMonth = d3.timeFormat('%B')
       const minMonth = d3.min(months)
       const maxMonth = d3.max(months)
@@ -496,7 +496,7 @@ class HeatMap extends Component {
       // Temps (Color)
       const temps = dataSet.map( d => (baseTemp + d.variance))
       const colorRange = ['#2433FF', '#3C2EE3', '#542AC7', '#6D26AB', '#85228F', '#9D1D74', '#B61958', '#CE153C', '#E61120', '#FF0D05']
-      
+
       // Bar Sizes
       const barWidth = Math.ceil(width / (maxYear.getFullYear() - minYear.getFullYear()))
       const barHeight = Math.ceil(height / (maxMonth.getMonth() - minMonth.getMonth()))
@@ -543,7 +543,7 @@ class HeatMap extends Component {
         .append('rect')
           .attr('class', 'heat-bar')
           .attr('x', d => x(new Date(d.year, 0)))
-          .attr('y', d => y(new Date(0, d.month-1)) - (barHeight / 2))
+          .attr('y', d => y(new Date(0, d.month - 1)) - (barHeight / 2))
           .attr('width', barWidth)
           .attr('height', barHeight)
           .attr('fill', d => colorFill( d.variance + baseTemp ))
@@ -561,7 +561,7 @@ class HeatMap extends Component {
       const legend = d3.select(graph)
         .append('g')
           .attr('class', 'legend')
-      
+
       // Minimum Range
       legend.append('text')
           .attr('class', 'range-min')
@@ -631,7 +631,7 @@ class ForceGraph extends Component {
     svg.append('div')
       .attr('id', 'force-tool-tip')
 
-    d3.json(this.props.url, function(error, graph) {
+    d3.json(this.props.url, function (error, graph) {
       if (error) throw error;
 
       const node = d3.select('.nodes')
@@ -669,16 +669,16 @@ class ForceGraph extends Component {
 
       function ticked() {
         link
-            .attr('x1', function(d) { return d.source.x })
-            .attr('y1', function(d) { return d.source.y })
-            .attr('x2', function(d) { return d.target.x })
-            .attr('y2', function(d) { return d.target.y })
+            .attr('x1', function (d) { return d.source.x })
+            .attr('y1', function (d) { return d.source.y })
+            .attr('x2', function (d) { return d.target.x })
+            .attr('y2', function (d) { return d.target.y })
 
         node
-            .attr('cx', function(d) { return d.x = Math.max(radius, Math.min(width - radius, d.x)) })
-            .attr('cy', function(d) { return d.y = Math.max(radius, Math.min(height - radius, d.y)) })
-            .attr('style', function(d) { 
-              let styleString =  'left:' + Math.max(radius, Math.min(width - radius, d.x)) + 'px; ' +
+            .attr('cx', function (d) { return d.x = Math.max(radius, Math.min(width - radius, d.x)) })
+            .attr('cy', function (d) { return d.y = Math.max(radius, Math.min(height - radius, d.y)) })
+            .attr('style', function (d) {
+              let styleString = 'left:' + Math.max(radius, Math.min(width - radius, d.x)) + 'px; ' +
                 'top:' + Math.max(radius, Math.min(height - radius, d.y)) + 'px;'
               return styleString
             })
@@ -762,34 +762,34 @@ class MeteorMap extends Component {
         .projection(projection);
 
     const graticule = d3.geoGraticule();
-    
+
     const map = d3.select('#map')
 
-    map.append("defs").append("path")
-        .datum({type: "Sphere"})
-        .attr("id", "sphere")
-        .attr("d", path);
+    map.append('defs').append('path')
+        .datum({type: 'Sphere'})
+        .attr('id', 'sphere')
+        .attr('d', path);
 
-    map.append("use")
-        .attr("class", "stroke")
-        .attr("xlink:href", "#sphere");
+    map.append('use')
+        .attr('class', 'stroke')
+        .attr('xlink:href', '#sphere');
 
-    map.append("use")
-        .attr("class", "fill")
-        .attr("xlink:href", "#sphere");
+    map.append('use')
+        .attr('class', 'fill')
+        .attr('xlink:href', '#sphere');
 
-    map.append("path")
+    map.append('path')
         .datum(graticule)
-        .attr("class", "graticule")
-        .attr("d", path);
+        .attr('class', 'graticule')
+        .attr('d', path);
 
     // WORLD MAP
-    d3.json('https://raw.githubusercontent.com/mbostock/topojson/master/examples/world-50m.json', function(error, world) {
+    d3.json('https://raw.githubusercontent.com/mbostock/topojson/master/examples/world-50m.json', function (error, world) {
       if (error) throw error
 
       map.append('g')
         .attr('class', 'meteor-g')
-        .attr("transform", "scale(" + width/1900 + ")")
+        .attr('transform', 'scale(' + width / 1900 + ')')
         .selectAll('path')
         .data(topojson.feature(world, world.objects.countries).features)
         .enter()
@@ -799,7 +799,7 @@ class MeteorMap extends Component {
           .attr('d', path)
 
        // METEOR STRIKES
-       d3.json('https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/meteorite-strike-data.json', function(error, meteorJson) {
+       d3.json('https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/meteorite-strike-data.json', function (error, meteorJson) {
         if (error) throw error
 
         const masses = meteorJson.features.map( (d) => {
@@ -807,7 +807,7 @@ class MeteorMap extends Component {
           return parseInt(d.properties.mass)
         })
 
-        const m = function(d) {
+        const m = function (d) {
           if ( d <= 1000 ) return 2
           if ( d <= 5000 ) return 3
           if ( d <= 10000 ) return 4
@@ -822,7 +822,7 @@ class MeteorMap extends Component {
 
         map.append('g')
           .attr('class', 'meteor-g')
-          .attr("transform", "scale(" + width/1900 + ")")
+          .attr('transform', 'scale(' + width / 1900 + ')')
           .selectAll('path')
           .data(meteorJson.features)
           .enter()
@@ -862,17 +862,17 @@ class MeteorMap extends Component {
           const theToolTip = document.getElementById('map-tool-tip')
           theToolTip.style.opacity = 0
         }
-      })   
+      })
 
       // Resize map on window resize
       // Save the scatterplot first
       window.addEventListener('resize', sizeChange)
       function sizeChange() {
         const width = document.getElementById('meteor-map').clientWidth
-        d3.selectAll(".meteor-g").attr("transform", "scale(" + width/1900 + ")")
-        d3.select('.map').attr('height', width/2)
-      } 
-    })   
+        d3.selectAll('.meteor-g').attr('transform', 'scale(' + width / 1900 + ')')
+        d3.select('.map').attr('height', width / 2)
+      }
+    })
   }
 
   render() {
@@ -885,7 +885,7 @@ class MeteorMap extends Component {
     const width = this.props.window.width - 2 * (margin.left + margin.right)
     const height = this.props.window.height / 2 - (margin.top - margin.bottom)
 
-    return(
+    return (
       <div className="card" id="meteor-map" ref="mapMount" width={width} height="400">
         <h2>Meteor Strikes</h2>
       </div>
