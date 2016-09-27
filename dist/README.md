@@ -1,6 +1,6 @@
 # FCC D3 Projects
 
-Visit the site below (psssss...you're already here)
+Visit the site below:
 
 https://jordan-carney.github.io/fcc-d3/
 
