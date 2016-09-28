@@ -27,6 +27,7 @@ BarChart.defaultProps = {
   data: {}
 }
 
+
 BarChart.propTypes = {
   data: PropTypes.object
 }

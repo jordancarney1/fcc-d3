@@ -50,5 +50,4 @@ export const orElse = curry((val, m) => m.orElse(val))
 
 export const join = m => m.join()
 
-
 export default Maybe
